@@ -1,14 +1,15 @@
 import { Controller } from '@nestjs/common';
 import { FacturasService } from './facturas.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { Response } from 'express';
+
+import { OrderDto } from './dtos/order.dto';
+import { Readable } from 'stream';
 
 @Controller()
 export class FacturasController {
   constructor(private readonly facturasService: FacturasService) {}
   @MessagePattern('factura.create')
-  createFactura(@Payload() id: number, response: Response) {
-    const pdfDoc = this.facturasService.createFactura(id);
-    response.setHeader('Content-Type', 'application/pdf');
+  async createFactura(@Payload() order: OrderDto) {
+    return this.facturasService.createFactura(order);
   }
 }

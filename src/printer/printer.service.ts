@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+
 import PdfPrinter from 'pdfmake';
-import {
+import type {
   BufferOptions,
   CustomTableLayout,
   TDocumentDefinitions,
 } from 'pdfmake/interfaces';
+import { Readable } from 'stream';
 
 const fonts = {
   Roboto: {
@@ -26,19 +28,15 @@ const customTableLayouts: Record<string, CustomTableLayout> = {
     vLineWidth: function (i) {
       return 0;
     },
-
     hLineColor: function (i) {
       return i === 1 ? 'black' : '#aaa';
     },
-
     paddingLeft: function (i) {
       return i === 0 ? 0 : 8;
     },
-
     paddingRight: function (i, node) {
       return i === node.table.widths.length - 1 ? 0 : 8;
     },
-
     fillColor: function (i, node) {
       if (i === 0) {
         return '#7b90be';
@@ -55,10 +53,19 @@ const customTableLayouts: Record<string, CustomTableLayout> = {
 export class PrinterService {
   private printer = new PdfPrinter(fonts);
 
-  createPdf(
+  async createPdf(
     docDefinition: TDocumentDefinitions,
     options: BufferOptions = { tableLayouts: customTableLayouts },
-  ) {
-    return this.printer.createPdfKitDocument(docDefinition, options);
+  ): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      const pdfDoc = this.printer.createPdfKitDocument(docDefinition, options);
+      const chunks: Buffer[] = [];
+
+      pdfDoc.on('data', (chunk) => chunks.push(chunk));
+      pdfDoc.on('end', () => resolve(Buffer.concat(chunks)));
+      pdfDoc.on('error', (err) => reject(err));
+
+      pdfDoc.end();
+    });
   }
 }

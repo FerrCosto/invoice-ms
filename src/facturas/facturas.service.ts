@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { NATS_SERVICE } from 'src/config';
-import { InvoiceToPDF } from 'src/PDFFormatter/incoice-formatter.pdf';
+import { InvoiceToPDF, Order } from 'src/PDFFormatter/incoice-formatter.pdf';
 import { PrinterService } from '../printer/printer.service';
+import { OrderDto } from './dtos/order.dto';
+import { Readable } from 'stream';
 
 @Injectable()
 export class FacturasService {
@@ -11,10 +13,10 @@ export class FacturasService {
     private readonly printerService: PrinterService,
   ) {}
 
-  async createFactura(id: number) {
-    const order = this.client.send('order.findOne', id);
+  async createFactura(order: OrderDto) {
     const docDefinition = InvoiceToPDF({ data: order as any });
-    const doc = this.printerService.createPdf(docDefinition);
-    return doc;
+    const doc = await this.printerService.createPdf(docDefinition);
+
+    return doc.toString('base64');
   }
 }
