@@ -8,20 +8,25 @@ import {
   IsEnum,
   ValidateNested,
   IsUrl,
+  IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { STATUS } from 'src/enums/status-order.enum';
 
 export class OrderDto {
   @IsNumber()
   @IsPositive()
   id: number;
 
+  @IsString()
+  userId: string;
+
   @IsDate()
   @Type(() => Date)
   date_order: Date;
 
-  @IsString()
-  status: string;
+  @IsEnum(STATUS)
+  status: STATUS;
 
   @IsBoolean()
   paid: boolean;
@@ -30,6 +35,9 @@ export class OrderDto {
   @ValidateNested({ each: true })
   @Type(() => Detail)
   details: Detail[];
+
+  @IsString()
+  totalAmount: string;
 }
 
 class Detail {
@@ -42,11 +50,14 @@ class Detail {
   quantity: number;
 
   @IsString()
-  price: string;
+  price: string; // Aquí se podría transformar a un número si se necesita
 
-  @IsArray()
-  @IsString({ each: true })
-  name: string[];
+  @IsString()
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -54,7 +65,7 @@ class Detail {
   img: Img[];
 
   @IsString()
-  totalPrice: string;
+  totalPrice: string; // Igual que con price, podría ser un número
 }
 
 class Img {
@@ -63,6 +74,7 @@ class Img {
 
   @IsString()
   alt: string;
+
   @IsString()
   state_image: string;
 }
