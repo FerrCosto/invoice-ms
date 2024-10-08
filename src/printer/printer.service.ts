@@ -39,12 +39,12 @@ const customTableLayouts: Record<string, CustomTableLayout> = {
     },
     fillColor: function (i, node) {
       if (i === 0) {
-        return '#7b90be';
+        return '#747474';
       }
       if (i === node.table.body.length - 1) {
-        return '#acb3c1';
+        return '#F2F2F2';
       }
-      return i % 2 === 0 ? '#f3f3f3' : null;
+      return i % 2 === 0 ? '#FFFFFF' : null;
     },
   },
 };
