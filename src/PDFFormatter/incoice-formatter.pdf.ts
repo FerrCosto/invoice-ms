@@ -3,7 +3,7 @@ import {
   StyleDictionary,
   TDocumentDefinitions,
 } from 'pdfmake/interfaces';
-import { CurrencyFormatter } from 'src/helpers/currency-formatter.helper';
+import { DataDto } from 'src/facturas/dtos/fullData.dto';
 import { DateFormatter } from 'src/helpers/date-formatter.helper';
 
 const logo: Content = {
@@ -38,39 +38,9 @@ const styles: StyleDictionary = {
   },
 };
 
-export interface Order {
-  id: number;
-  date_order: Date;
-  status: string;
-  paid: boolean;
-  details: Detail[];
-  totalAmount: string;
-}
-
-export interface Detail {
-  id: number;
-  quantity: number;
-  price: string;
-  description: string;
-  name: string[];
-  img: Array<Img[]>;
-  totalPrice: string;
-}
-
-export interface Img {
-  url: string;
-  alt: string;
-  state_image: string;
-}
-interface ReportValue {
-  title?: string;
-  subTitle?: string;
-  data: Order;
-}
-export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
-  const { title, subTitle, data } = value;
-  console.log(data);
-  const { details, paid, status } = data;
+export const InvoiceToPDF = (value: DataDto): TDocumentDefinitions => {
+  const { order, user } = value;
+  const { details, ...resData } = order;
   console.log(details);
   return {
     styles: styles,
@@ -91,14 +61,14 @@ export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
           {
             text: [
               {
-                text: `Recibo No. #${data.id}\n`,
+                text: `Recibo No. #${order.id}\n`,
                 bold: true,
               },
               {
                 text: `Fecha del Recibo: `,
                 bold: true,
               },
-              ` ${DateFormatter.getDDMMMMYYYY(data.date_order)}\n`,
+              ` ${DateFormatter.getDDMMMMYYYY(order.date_order)}\n`,
               {
                 text: `Fecha de Pago: `,
                 bold: true,
@@ -113,17 +83,17 @@ export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
                 text: `Destinatario: `,
                 bold: true,
               },
-              `Kevin Salamanca\n`,
+              `${user.fullName}\n`,
               {
                 text: `Dirección: `,
                 bold: true,
               },
-              ` Cra 15A #53-04, El Oasis\n`,
+              ` ${user.direccion.street}, ${user.direccion.city}\n`,
               {
-                text: `Código Postal: : `,
+                text: `Código Postal:  `,
                 bold: true,
               },
-              `681001\n`,
+              `${user.direccion.postal}\n`,
             ],
             margin: [45, 45, 0, 25],
           },
@@ -165,7 +135,7 @@ export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
               '---------------------------------------------------------',
               '-------------------',
               '--------------------',
-              `${data.totalAmount}`,
+              `${order.totalAmount}`,
             ],
           ],
         },

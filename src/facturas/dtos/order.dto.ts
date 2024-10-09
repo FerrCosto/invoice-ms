@@ -13,31 +13,15 @@ import {
 import { Type } from 'class-transformer';
 import { STATUS } from 'src/enums/status-order.enum';
 
-export class OrderDto {
-  @IsNumber()
-  @IsPositive()
-  id: number;
+class Img {
+  @IsUrl()
+  url: string;
 
   @IsString()
-  userId: string;
-
-  @IsDate()
-  @Type(() => Date)
-  date_order: Date;
-
-  @IsEnum(STATUS)
-  status: STATUS;
-
-  @IsBoolean()
-  paid: boolean;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Detail)
-  details: Detail[];
+  alt: string;
 
   @IsString()
-  totalAmount: string;
+  state_image: string;
 }
 
 class Detail {
@@ -67,14 +51,29 @@ class Detail {
   @IsString()
   totalPrice: string; // Igual que con price, podría ser un número
 }
-
-class Img {
-  @IsUrl()
-  url: string;
-
-  @IsString()
-  alt: string;
+export class OrderDto {
+  @IsNumber()
+  @IsPositive()
+  id: number;
 
   @IsString()
-  state_image: string;
+  userId: string;
+
+  @IsDate()
+  @Type(() => Date)
+  date_order: Date;
+
+  @IsEnum(STATUS)
+  status: STATUS;
+
+  @IsBoolean()
+  paid: boolean;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Detail)
+  details: Detail[];
+
+  @IsString()
+  totalAmount: string;
 }
