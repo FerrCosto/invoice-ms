@@ -5,6 +5,7 @@ import {
 } from 'pdfmake/interfaces';
 import { DataDto } from 'src/facturas/dtos/fullData.dto';
 import { DateFormatter } from 'src/helpers/date-formatter.helper';
+import { footerSection } from 'src/sections/footer.section';
 
 const logo: Content = {
   image: 'src/assets/logo-ferreteria.png',
@@ -45,6 +46,7 @@ export const InvoiceToPDF = (value: DataDto): TDocumentDefinitions => {
   return {
     styles: styles,
     header: logo,
+    footer: footerSection,
     pageMargins: [40, 60, 40, 60],
     content: [
       {
