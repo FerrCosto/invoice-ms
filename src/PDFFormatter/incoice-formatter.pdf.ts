@@ -26,6 +26,16 @@ const styles: StyleDictionary = {
     alignment: 'center',
     margin: [100, 10, 0, 0],
   },
+  pBuy: {
+    fontSize: 12,
+    bold: true,
+    margin: [0, 60, 0, 30],
+    alignment: 'center',
+  },
+  pRest: {
+    fontSize: 12,
+    alignment: 'center',
+  },
 };
 
 export interface Order {
@@ -76,7 +86,7 @@ export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
         style: 'subHeader',
       },
       {
-        margin: [0, 25],
+        margin: [0, 25, 0, 25],
         columns: [
           {
             text: [
@@ -95,7 +105,7 @@ export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
               },
               ` ${DateFormatter.getDDMMMMYYYY(new Date())}\n`,
             ],
-            marginTop: 45,
+            margin: [0, 45, 0, 25],
           },
           {
             text: [
@@ -115,7 +125,7 @@ export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
               },
               `681001\n`,
             ],
-            margin: [45, 45, 0, 0],
+            margin: [45, 45, 0, 25],
           },
         ],
       },
@@ -152,13 +162,33 @@ export const InvoiceToPDF = (value: ReportValue): TDocumentDefinitions => {
             ]),
             [
               'Total',
-              '-------',
-              '---------',
-              '--------',
+              '---------------------------------------------------------',
+              '-------------------',
+              '--------------------',
               `${data.totalAmount}`,
             ],
           ],
         },
+      },
+
+      {
+        text: '¡Gracias por tu compra en LA MACHETA!\n',
+        style: 'pBuy',
+      },
+      {
+        text: 'Con las herramientas correctas, todo es posible.\n Esperamos verte pronto y ser parte de tus próximos proyectos.\n¡Que tengas un excelente día!',
+        style: 'pRest',
+      },
+      {
+        text: 'Para más Información sobre pedidos y envíos consulta a:\n',
+        fontSize: 12,
+        margin: [0, 50, 0, 30],
+        alignment: 'left',
+      },
+      {
+        qr: 'https://google.com',
+        fit: 75,
+        alignment: 'left',
       },
     ],
   };
