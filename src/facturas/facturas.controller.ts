@@ -7,7 +7,7 @@ import { DataDto } from './dtos/fullData.dto';
 @Controller()
 export class FacturasController {
   constructor(private readonly facturasService: FacturasService) {}
-  @MessagePattern('factura.create')
+  @MessagePattern('invoice.create')
   async createFactura(@Payload() dataDto: DataDto) {
     return this.facturasService.createFactura(dataDto);
   }

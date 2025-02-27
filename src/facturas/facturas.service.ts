@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { NATS_SERVICE } from 'src/config';
 import { InvoiceToPDF } from 'src/PDFFormatter/incoice-formatter.pdf';
 import { PrinterService } from '../printer/printer.service';
@@ -13,9 +13,17 @@ export class FacturasService {
   ) {}
 
   async createFactura(dataDto: DataDto) {
-    const docDefinition = InvoiceToPDF(dataDto);
-    const doc = await this.printerService.createPdf(docDefinition);
-
-    return doc.toString('base64');
+    try {
+      console.log({ dataDto });
+      const docDefinition = InvoiceToPDF(dataDto);
+      const doc = await this.printerService.createPdf(docDefinition);
+      return doc.toString('base64');
+    } catch (error) {
+      console.log(error);
+      throw new RpcException({
+        status: 500,
+        message: 'Mirar los logs del servidor',
+      });
+    }
   }
 }

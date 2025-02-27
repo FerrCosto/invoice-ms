@@ -1,32 +1,26 @@
 import { Type } from 'class-transformer';
-import {
-  IsEmail,
-  IsInt,
-  IsNumber,
-  IsPositive,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
 
-export class UserDireccionDto {
+import { IsEmail, IsOptional, IsString, ValidateNested } from 'class-validator';
+
+export class Direccion {
   @IsString()
   city: string;
   @IsString()
-  street: string;
-  @IsInt()
-  @IsPositive()
-  postal: number;
+  zip: string;
+  @IsString()
+  address: string;
+  @IsString()
+  @IsOptional()
+  address2?: string;
 }
-
 export class UserDto {
   @IsString()
   fullName: string;
   @IsEmail()
   email: string;
-  @IsNumber()
-  @IsPositive()
-  telefono: number;
+  @IsString()
+  telefono: string;
   @ValidateNested()
-  @Type(() => UserDireccionDto)
-  direccion: UserDireccionDto;
+  @Type(() => Direccion)
+  direccion: Direccion;
 }

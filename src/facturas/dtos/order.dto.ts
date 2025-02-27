@@ -61,7 +61,11 @@ export class OrderDto {
 
   @IsDate()
   @Type(() => Date)
-  date_order: Date;
+  createAt: Date;
+
+  @IsDate()
+  @Type(() => Date)
+  updateAt: Date;
 
   @IsEnum(STATUS)
   status: STATUS;
